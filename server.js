@@ -3,15 +3,12 @@
 const express = require('express');
 // Importing all necessary dependencies
 const QuickChart = require('quickchart-js');
-const dotenv = require('dotenv');
 const { Client } = require('@notionhq/client');
-const axios = require('axios');
 
-dotenv.config();
 
 // Constants
-const PORT = 7000;
-const HOST = '0.0.0.0';
+const PORT = process.env.PORT || 7000;
+const HOST = process.env.HOST || '0.0.0.0';
 
 // App
 const app = express();
