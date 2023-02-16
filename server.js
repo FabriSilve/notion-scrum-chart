@@ -176,11 +176,11 @@ app.get('/chart/:token/:databaseId/:width/:height', async (req, res) => {
           "backgroundColor": "rgba(215,74,74, .5)",
           radius: 50,
           "data": [
+            undefined,
             donePointsPerDay[4] ? Math.max(pointsPerDay[4] - donePointsPerDay[4], 0) : undefined,
             donePointsPerDay[5] ? Math.max(pointsPerDay[5] - donePointsPerDay[5], 0) : undefined,
             donePointsPerDay[1] ? Math.max(pointsPerDay[1] - donePointsPerDay[1], 0) : undefined,
             donePointsPerDay[2] ? Math.max(pointsPerDay[2] - donePointsPerDay[2], 0) : undefined,
-            donePointsPerDay[3] ? Math.max(pointsPerDay[3] - donePointsPerDay[3], 0) : undefined,
           ],
           "borderColor": "red",
           "borderWidth": 2
