@@ -124,12 +124,28 @@ app.get('/chart/:token/:databaseId/:width/:height', async (req, res) => {
 
   const sprintChunk = Math.round(totalPointsSprint / 9);
   const pointsPerDay = {
-    4: sprintChunk,
-    5: sprintChunk * 3,
-    1: sprintChunk * 5,
-    2: sprintChunk * 7,
-    3: sprintChunk * 9,
+    4: sprintChunk * 9,
+    5: sprintChunk * 8,
+    1: sprintChunk * 6,
+    2: sprintChunk * 4,
+    3: sprintChunk * 2,
   };
+
+  const pointsLine = [
+    donePointsPerDay[4] ? totalPointsSprint - donePointsPerDay[4] : totalPointsSprint,
+    donePointsPerDay[5] ? totalPointsSprint - (donePointsPerDay[4] + donePointsPerDay[5]) : undefined,
+    donePointsPerDay[1] ? totalPointsSprint - (donePointsPerDay[4] + donePointsPerDay[5] + donePointsPerDay[1]) : undefined,
+    donePointsPerDay[2] ? totalPointsSprint - (donePointsPerDay[4] + donePointsPerDay[5] + donePointsPerDay[1] + donePointsPerDay[2]) : undefined,
+    donePointsPerDay[3] ? totalPointsSprint - (donePointsPerDay[4] + donePointsPerDay[5] + donePointsPerDay[1] + donePointsPerDay[2] + donePointsPerDay[3]) : undefined,
+  ];
+  const previsionLine = [
+    pointsPerDay[4],
+    pointsPerDay[5],
+    pointsPerDay[1],
+    pointsPerDay[2],
+    pointsPerDay[3],
+    0,
+  ]
 
   const data = {
     "title": '',
@@ -140,47 +156,38 @@ app.get('/chart/:token/:databaseId/:width/:height', async (req, res) => {
         "Friday",
         "Monday",
         "Tuesday",
-        "Wednesday"
+        "Wednesday",
+        "Ceremony",
       ],
       "datasets": [{
           "type": "line",
           "label": "Points",
           "fill": false,
           "backgroundColor": "rgb(50, 102, 70)",
-          "data": [
-            donePointsPerDay[4],
-            donePointsPerDay[5] ? donePointsPerDay[4] + donePointsPerDay[5] : undefined,
-            donePointsPerDay[1] ? donePointsPerDay[4] + donePointsPerDay[5] + donePointsPerDay[1] : undefined,
-            donePointsPerDay[2] ? donePointsPerDay[4] + donePointsPerDay[5] + donePointsPerDay[1] + donePointsPerDay[2] : undefined,
-            donePointsPerDay[3] ? donePointsPerDay[4] + donePointsPerDay[5] + donePointsPerDay[1] + donePointsPerDay[2] + donePointsPerDay[3] : undefined,
-          ],
+          "data": pointsLine,
           "borderColor": "rgb(50, 102, 70)",
-          "borderWidth": 6
+          "borderWidth": 4,
+          "lineTension": 0.4,
         },
         {
         "type": "line",
         "label": "Prevision",
         "borderColor": "rgb(54, 162, 235)",
-        "borderWidth": 3,
+        "borderWidth": 2,
         "fill": false,
-        "data": [
-          pointsPerDay[4],
-          pointsPerDay[5],
-          pointsPerDay[1],
-          pointsPerDay[2],
-          pointsPerDay[3],
-        ]},
+        "data": previsionLine,
+        },
         {
           "type": "bar",
           "label": "late",
           "backgroundColor": "rgba(215,74,74, .5)",
           radius: 50,
           "data": [
-            undefined,
-            donePointsPerDay[5] ? Math.max(pointsPerDay[4] - donePointsPerDay[4], 0) : undefined,
-            donePointsPerDay[1] ? Math.max(pointsPerDay[5] - donePointsPerDay[5], 0) : undefined,
-            donePointsPerDay[2] ? Math.max(pointsPerDay[1] - donePointsPerDay[1], 0) : undefined,
-            donePointsPerDay[3] ? Math.max(pointsPerDay[2] - donePointsPerDay[2], 0) : undefined,
+            pointsLine[0] ? Math.max(pointsLine[0] - previsionLine[0], 0) : undefined,
+            pointsLine[1] ? Math.max(pointsLine[1] - previsionLine[1], 0) : undefined,
+            pointsLine[2] ? Math.max(pointsLine[2] - previsionLine[2], 0) : undefined,
+            pointsLine[3] ? Math.max(pointsLine[3] - previsionLine[3], 0) : undefined,
+            pointsLine[4] ? Math.max(pointsLine[4] - previsionLine[4], 0) : undefined,
           ],
           "borderColor": "red",
           "borderWidth": 2
