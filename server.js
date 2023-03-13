@@ -45,78 +45,51 @@ app.get('/chart/:token/:databaseId/:width/:height', async (req, res) => {
     2: 0,
     3: 0,
   };
+  const today = dayjs().day();
+  const showThursday = today === 5
+    || today === 6
+    || today === 0
+    || today === 1
+    || today === 2
+    || today === 3;
+  const showFriday = today === 6
+    || today === 0
+    || today === 1
+    || today === 2
+    || today === 3;
+  const showMonday = today === 0
+    || today === 1
+    || today === 2
+    || today === 3;
+  const showTuesday = today === 2
+    || today === 3;
+  const showWednesday = today === 3;
   for (let i = 0; i < results.length; i++) {
     const page = results[i];
     const status = page.properties.Status.select.name;
     const points = page.properties.Points.number;
     const lastUpdateDay = dayjs(page.last_edited_time).day()
 
-    const today = dayjs().day();
     if (status === 'Done') {
       if (lastUpdateDay === 4) {
         donePointsPerDay[4] += points;
       }
-      if (
-        lastUpdateDay === 5
-        && (
-          today === 5
-          || today === 6
-          || today === 0
-          || today === 1
-          || today === 2
-          || today === 3
-        )
-      ) {
+      if (lastUpdateDay === 5) {
         donePointsPerDay[5] += points;
       }
-      if (
-        lastUpdateDay === 6
-        && (
-          today === 6
-          || today === 0
-          || today === 1
-          || today === 2
-          || today === 3
-        )
-      ) {
+      if (lastUpdateDay === 6) {
         donePointsPerDay[1] += points;
       }
-      if (
-        lastUpdateDay === 0
-        && (
-          today === 0
-          || today === 1
-          || today === 2
-          || today === 3
-        )
-      ) {
+      if (lastUpdateDay === 0) {
         donePointsPerDay[1] += points;
       }
-      if (
-        lastUpdateDay === 1
-        && (
-          today === 1
-          || today === 2
-          || today === 3
-        )
-      ) {
+      if (lastUpdateDay === 1) {
         donePointsPerDay[1] += points;
       }
-      if (
-        lastUpdateDay === 2
-        && (
-          today === 2
-          || today === 3
-        )
-      ) {
+      if (lastUpdateDay === 2) {
         donePointsPerDay[2] += points;
       }
-      if (
-        lastUpdateDay === 3
-        && (
-          today === 3
-        )
-      ) donePointsPerDay[3] += points;
+      if (lastUpdateDay === 3) donePointsPerDay[3] += points;
     }
 
     totalPointsSprint += points;
@@ -132,11 +105,11 @@ app.get('/chart/:token/:databaseId/:width/:height', async (req, res) => {
   };
 
   const pointsLine = [
-    donePointsPerDay[4] ? totalPointsSprint - donePointsPerDay[4] : totalPointsSprint,
-    donePointsPerDay[5] ? totalPointsSprint - (donePointsPerDay[4] + donePointsPerDay[5]) : undefined,
-    donePointsPerDay[1] ? totalPointsSprint - (donePointsPerDay[4] + donePointsPerDay[5] + donePointsPerDay[1]) : undefined,
-    donePointsPerDay[2] ? totalPointsSprint - (donePointsPerDay[4] + donePointsPerDay[5] + donePointsPerDay[1] + donePointsPerDay[2]) : undefined,
-    donePointsPerDay[3] ? totalPointsSprint - (donePointsPerDay[4] + donePointsPerDay[5] + donePointsPerDay[1] + donePointsPerDay[2] + donePointsPerDay[3]) : undefined,
+    showThursday ? totalPointsSprint - donePointsPerDay[4] : totalPointsSprint,
+    showFriday ? totalPointsSprint - (donePointsPerDay[4] + donePointsPerDay[5]) : undefined,
+    showMonday ? totalPointsSprint - (donePointsPerDay[4] + donePointsPerDay[5] + donePointsPerDay[1]) : undefined,
+    showTuesday ? totalPointsSprint - (donePointsPerDay[4] + donePointsPerDay[5] + donePointsPerDay[1] + donePointsPerDay[2]) : undefined,
+    showWednesday ? totalPointsSprint - (donePointsPerDay[4] + donePointsPerDay[5] + donePointsPerDay[1] + donePointsPerDay[2] + donePointsPerDay[3]) : undefined,
   ];
   const previsionLine = [
     pointsPerDay[4],
