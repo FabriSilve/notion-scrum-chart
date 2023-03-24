@@ -52,12 +52,14 @@ app.get('/chart/:token/:databaseId/:width/:height', async (req, res) => {
     || today === 1
     || today === 2
     || today === 3;
-  const showFriday = today === 6
+  const showFriday = today === 5
+    || today === 6
     || today === 0
     || today === 1
     || today === 2
     || today === 3;
-  const showMonday = today === 0
+  const showMonday = today === 6
+    || today === 0
     || today === 1
     || today === 2
     || today === 3;
