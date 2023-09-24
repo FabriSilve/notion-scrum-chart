@@ -15,6 +15,26 @@ const HOST = process.env.HOST || '0.0.0.0';
 const app = express();
 app.get('/', (_req, res) => res.send('ok'));
 
+app.post('/:token/:databaseId/query', async (req, res) => {
+  console.log('here');
+  const { token, databaseId } = req.params;
+  const notion = new Client({ auth: token });
+
+  const { results } = await notion.databases.query({
+    database_id: databaseId,
+    filter: {
+      "timestamp": "last_edited_time",
+      "last_edited_time": {
+        "after": "2023-09-01"
+      }
+    },
+  });
+
+  console.log(results);
+
+  res.json(results);
+});
+
 app.get('/chart/:token/:databaseId/:width/:height', async (req, res) => {
   const { token, databaseId, width, height } = req.params;
   const notion = new Client({ auth: token });
