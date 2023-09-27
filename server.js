@@ -15,24 +15,88 @@ const HOST = process.env.HOST || '0.0.0.0';
 const app = express();
 app.get('/', (_req, res) => res.send('ok'));
 
-app.post('/:token/:databaseId/query', async (req, res) => {
-  console.log('here');
+app.get('/query/:token/:databaseId/', async (req, res) => {
   const { token, databaseId } = req.params;
   const notion = new Client({ auth: token });
 
-  const { results } = await notion.databases.query({
+  const result = await notion.databases.query({
     database_id: databaseId,
     filter: {
-      "timestamp": "last_edited_time",
-      "last_edited_time": {
-        "after": "2023-09-01"
-      }
+      "or": [
+        'To Validate',
+        'Validated',
+        'Done',
+        'Done #30',
+        'Done #29',
+        'Done #28',
+        'Done #27',
+        'Done #26',
+        'Done #25',
+        'Done #24',
+        'Done #23',
+      ].map((label) => ({
+        property: "Status",
+        select: { equals: label },
+      })),
     },
+    page_size: 100
   });
 
-  console.log(results);
+  const tickets = result.results;
+  const nextCursor = result.next_cursor;
 
-  res.json(results);
+  res.json({
+    tickets,
+    nextCursor,
+  });
+});
+
+app.get('/query/:token/:databaseId/:cursor', async (req, res) => {
+  const { token, databaseId, cursor } = req.params;
+  const notion = new Client({ auth: token });
+
+  const result = await notion.databases.query({
+    database_id: databaseId,
+    start_cursor: cursor,
+    filter: {
+      "or": [
+        'To Validate',
+        'Validated',
+        'Done',
+        'Done #30',
+        'Done #29',
+        'Done #28',
+        'Done #27',
+        'Done #26',
+        'Done #25',
+        'Done #24',
+        'Done #23',
+        'Done #22',
+        'Done #21',
+        'Done #20',
+        'Done #19',
+        'Done #18',
+        'Done #17',
+        'Done #16',
+        'Done #15',
+        'Done #14',
+        'Done #13',
+        'Done #12',
+      ].map((label) => ({
+        property: "Status",
+        select: { equals: label },
+      })),
+    },
+    page_size: 50
+  });
+
+  const tickets = result.results;
+  const nextCursor = result.next_cursor;
+
+  res.json({
+    tickets,
+    nextCursor,
+  });
 });
 
 app.get('/chart/:token/:databaseId/:width/:height', async (req, res) => {
