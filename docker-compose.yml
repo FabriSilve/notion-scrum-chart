@@ -5,6 +5,17 @@ services:
     build: .
     command: npm run dev
     volumes:
-      - .:/usr/src/app
+      - ./api:/usr/src/app
     ports:
       - "7000:7000"
+
+  dashboard:
+    build:
+      context: ./dashboard
+      dockerfile: Dockerfile
+    command: npm run dev
+    ports:
+      - 7005:7005
+    volumes:
+      - ./dashboard:/home/node/code:delegated
+      - /home/node/code/node_modules/

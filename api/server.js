@@ -11,6 +11,30 @@ const { Client } = require('@notionhq/client');
 const PORT = process.env.PORT || 7000;
 const HOST = process.env.HOST || '0.0.0.0';
 
+const listColumns = [
+  'To Validate',
+  'Validated',
+  'Done',
+  'Done #47',
+  'Done #46',
+  'Done #45',
+  'Done #44',
+  'Done #43',
+  'Done #42',
+  'Done #41',
+  'Done #40',
+  'Done #39',
+  'Done #38',
+  'Done #37',
+  'Done #36',
+  'Done #35',
+  'Done #34',
+  'Done #33',
+  'Done #32',
+  'Done #31',
+  'Done #30',
+]
+
 // App
 const app = express();
 app.get('/', (_req, res) => res.send('ok'));
@@ -22,19 +46,7 @@ app.get('/query/:token/:databaseId/', async (req, res) => {
   const result = await notion.databases.query({
     database_id: databaseId,
     filter: {
-      "or": [
-        'To Validate',
-        'Validated',
-        'Done',
-        'Done #30',
-        'Done #29',
-        'Done #28',
-        'Done #27',
-        'Done #26',
-        'Done #25',
-        'Done #24',
-        'Done #23',
-      ].map((label) => ({
+      "or": listColumns.map((label) => ({
         property: "Status",
         select: { equals: label },
       })),
@@ -59,35 +71,12 @@ app.get('/query/:token/:databaseId/:cursor', async (req, res) => {
     database_id: databaseId,
     start_cursor: cursor,
     filter: {
-      "or": [
-        'To Validate',
-        'Validated',
-        'Done',
-        'Done #30',
-        'Done #29',
-        'Done #28',
-        'Done #27',
-        'Done #26',
-        'Done #25',
-        'Done #24',
-        'Done #23',
-        'Done #22',
-        'Done #21',
-        'Done #20',
-        'Done #19',
-        'Done #18',
-        'Done #17',
-        'Done #16',
-        'Done #15',
-        'Done #14',
-        'Done #13',
-        'Done #12',
-      ].map((label) => ({
+      "or": listColumns.map((label) => ({
         property: "Status",
         select: { equals: label },
       })),
     },
-    page_size: 50
+    page_size: 100
   });
 
   const tickets = result.results;
