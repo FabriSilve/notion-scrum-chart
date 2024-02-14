@@ -26,16 +26,6 @@ const listColumns = [
   'Done #42',
   'Done #41',
   'Done #40',
-  'Done #39',
-  'Done #38',
-  'Done #37',
-  'Done #36',
-  'Done #35',
-  'Done #34',
-  'Done #33',
-  'Done #32',
-  'Done #31',
-  'Done #30',
 ]
 
 // App
